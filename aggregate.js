@@ -11,7 +11,7 @@ const aggregate = (filePath) => {
   function CSVToArray() {
     const bufferarray = bufferString.toString();
     const replacearray = bufferarray.replace(/['"]+/g, '');
-    const splitarray = replacearray.split('\r\n').slice(0, -1);
+    const splitarray = replacearray.split('\n').slice(0, -1);
     const array2 = [];
     for (let i = 0; i < splitarray.length; i += 1) {
       const row = splitarray[i].toString().split(',');
