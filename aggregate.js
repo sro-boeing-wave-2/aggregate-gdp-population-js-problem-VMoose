@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 /**
- * Aggregates GDP and Population Data by Continents
+ * Aggregates GDP and Population Data by Continents..
  * @param {*} filePath
  */
 const aggregate = (filePath) => {
