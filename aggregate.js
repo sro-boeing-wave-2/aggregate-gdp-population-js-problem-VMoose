@@ -4,12 +4,37 @@ const fs = require('fs');
  * Aggregates GDP and Population Data by Continents..
  * @param {*} filePath
  */
-const aggregate = (filePath) => {
-  const bufferString = fs.readFileSync(filePath, 'utf8');
+
+
+async function readfileasync(filePath) {
+  return new Promise(((resolve, reject) => {
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  }));
+}
+async function writefileasync(outfilePath, outputdata) {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(outfilePath, outputdata, 'utf8', (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+}
+
+const aggregate = async (filePath) => {
+  const bufferString = await readfileasync(filePath);
   const outputFile = './output/output.json';
 
-  function CSVToArray() {
-    const bufferarray = bufferString.toString();
+  async function CSVToArray() {
+    const bufferarray = await bufferString.toString();
     const replacearray = bufferarray.replace(/['"]+/g, '');
     const splitarray = replacearray.split('\n').slice(0, -1);
     const array2 = [];
@@ -20,8 +45,8 @@ const aggregate = (filePath) => {
     return array2;
   }
 
-  function CSV2JSON(csv) {
-    const array = CSVToArray(csv);
+  async function CSV2JSON(csv) {
+    const array = await CSVToArray(csv);
     const objArray = [];
     for (let i = 1; i < array.length; i += 1) {
       objArray[i - 1] = {};
@@ -32,7 +57,7 @@ const aggregate = (filePath) => {
     }
     return objArray;
   }
-  const csvarray = CSV2JSON(bufferString);
+  const csvarray = await CSV2JSON(bufferString);
 
 
   const continent = [['Argentina', 'South America'],
@@ -66,7 +91,6 @@ const aggregate = (filePath) => {
     continentData[continent[i][1]].GDP_2012 += parseFloat(csvarray[i]['GDP Billions (US Dollar) - 2012']);
     continentData[continent[i][1]].POPULATION_2012 += parseFloat(csvarray[i]['Population (Millions) - 2012']);
   }
-
-  fs.writeFileSync(outputFile, JSON.stringify(continentData));
+  await writefileasync(outputFile, JSON.stringify(continentData));
 };
 module.exports = aggregate;
