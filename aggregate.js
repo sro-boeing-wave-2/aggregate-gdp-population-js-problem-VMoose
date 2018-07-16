@@ -33,18 +33,18 @@ const aggregate = async (filePath) => {
   const bufferString = await readfileasync(filePath);
   const outputFile = './output/output.json';
 
-  function CSVToArray() {
+  function CSVTo2dArray() {
     const bufferarray = bufferString.replace(/['"]+/g, '').split('\n').slice(0, -1);
-    const array2 = [];
+    const array2D = [];
     for (let i = 0; i < bufferarray.length; i += 1) {
-      const row = bufferarray[i].toString().split(',');
-      array2.push(row);
+      const arrayrow = bufferarray[i].toString().split(',');
+      array2D.push(arrayrow);
     }
-    return array2;
+    return array2D;
   }
 
-  async function CSV2JSON(csv) {
-    const array = await CSVToArray(csv);
+  async function Csv2ObjArray(csv) {
+    const array = await CSVTo2dArray(csv);
     const objArray = [];
     for (let i = 1; i < array.length; i += 1) {
       objArray[i - 1] = {};
@@ -55,7 +55,7 @@ const aggregate = async (filePath) => {
     }
     return objArray;
   }
-  const csvarray = await CSV2JSON(bufferString);
+  const csvobjarray = await Csv2ObjArray(bufferString);
 
   const continentData = {};
   new Set(Object.values(continent)).forEach((cont) => {
@@ -64,8 +64,8 @@ const aggregate = async (filePath) => {
     };
   });
   for (let i = 0; i < Object.keys(continent).length; i += 1) {
-    continentData[Object.entries(continent)[i][1]].GDP_2012 += parseFloat(csvarray[i]['GDP Billions (US Dollar) - 2012']);
-    continentData[Object.entries(continent)[i][1]].POPULATION_2012 += parseFloat(csvarray[i]['Population (Millions) - 2012']);
+    continentData[Object.entries(continent)[i][1]].GDP_2012 += parseFloat(csvobjarray[i]['GDP Billions (US Dollar) - 2012']);
+    continentData[Object.entries(continent)[i][1]].POPULATION_2012 += parseFloat(csvobjarray[i]['Population (Millions) - 2012']);
   }
   await writefileasync(outputFile, JSON.stringify(continentData));
 };
