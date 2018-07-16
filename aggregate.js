@@ -34,7 +34,7 @@ const aggregate = async (filePath) => {
   const outputFile = './output/output.json';
 
   async function CSVToArray() {
-    const bufferarray = await bufferString.toString();
+    const bufferarray = bufferString.toString();
     const replacearray = bufferarray.replace(/['"]+/g, '');
     const splitarray = replacearray.split('\n').slice(0, -1);
     const array2 = [];
