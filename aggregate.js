@@ -57,16 +57,15 @@ const aggregate = async (filePath) => {
   }
   const csvarray = await CSV2JSON(bufferString);
 
-  const continentMap = new Map(continent);
   const continentData = {};
-  new Set(continentMap.values()).forEach((cont) => {
+  new Set(Object.values(continent)).forEach((cont) => {
     continentData[cont] = {
       GDP_2012: 0, POPULATION_2012: 0,
     };
   });
-  for (let i = 0; i < continent.length; i += 1) {
-    continentData[continent[i][1]].GDP_2012 += parseFloat(csvarray[i]['GDP Billions (US Dollar) - 2012']);
-    continentData[continent[i][1]].POPULATION_2012 += parseFloat(csvarray[i]['Population (Millions) - 2012']);
+  for (let i = 0; i < Object.keys(continent).length; i += 1) {
+    continentData[Object.entries(continent)[i][1]].GDP_2012 += parseFloat(csvarray[i]['GDP Billions (US Dollar) - 2012']);
+    continentData[Object.entries(continent)[i][1]].POPULATION_2012 += parseFloat(csvarray[i]['Population (Millions) - 2012']);
   }
   await writefileasync(outputFile, JSON.stringify(continentData));
 };
