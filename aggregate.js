@@ -1,6 +1,8 @@
 const fs = require('fs');
-const continent = require('./continent');
 
+const outputFile = './output/output.json';
+
+const continentpath = 'continent.json';
 /**
  * Aggregates GDP and Population Data by Continents..
  * @param {*} filePath
@@ -29,45 +31,36 @@ function writefileasync(outfilePath, outputdata) {
   });
 }
 
-const aggregate = async (filePath) => {
-  const bufferString = await readfileasync(filePath);
-  const outputFile = './output/output.json';
-
-  function CSVTo2dArray() {
-    const bufferarray = bufferString.replace(/['"]+/g, '').split('\n').slice(0, -1);
-    const array2D = [];
-    for (let i = 0; i < bufferarray.length; i += 1) {
-      const arrayrow = bufferarray[i].toString().split(',');
-      array2D.push(arrayrow);
-    }
-    return array2D;
-  }
-
-  async function Csv2ObjArray(csv) {
-    const array = await CSVTo2dArray(csv);
-    const objArray = [];
-    for (let i = 1; i < array.length; i += 1) {
-      objArray[i - 1] = {};
-      for (let k = 0; k < array[0].length && k < array[i].length; k += 1) {
-        const key = array[0][k];
-        objArray[i - 1][key] = array[i][k];
+const aggregate = filePath => new Promise((resolve, reject) => {
+  Promise.all([readfileasync(filePath), readfileasync(continentpath)]).then((values) => {
+    const continentdata = JSON.parse(values[1]);
+    const csvData = values[0];
+    const processCsvData = (csvData.replace(/['"]+/g, '')).split('\n');
+    const CountryIndex = processCsvData[0].split(',').indexOf('Country Name');
+    const GdpIndex = processCsvData[0].split(',').indexOf('GDP Billions (US Dollar) - 2012');
+    const PopulationIndex = processCsvData[0].split(',').indexOf('Population (Millions) - 2012');
+    const aggregateData = {};
+    processCsvData.forEach((row) => {
+      const cells = row.split(',');
+      if (continentdata[cells[CountryIndex]] !== undefined) {
+        const continentName = continentdata[cells[CountryIndex]];
+        if (aggregateData[continentName] === undefined) {
+          aggregateData[continentName] = {};
+          aggregateData[continentName].GDP_2012 = parseFloat(cells[GdpIndex]);
+          aggregateData[continentName].POPULATION_2012 = parseFloat(cells[PopulationIndex]);
+        } else {
+          aggregateData[continentName].GDP_2012 += parseFloat(cells[GdpIndex]);
+          aggregateData[continentName].POPULATION_2012 += parseFloat(cells[PopulationIndex]);
+        }
       }
-    }
-    return objArray;
-  }
-  const csvobjarray = await Csv2ObjArray(bufferString);
-
-  const continentData = {};
-  new Set(Object.values(continent)).forEach((cont) => {
-    continentData[cont] = {
-      GDP_2012: 0, POPULATION_2012: 0,
-    };
+    });
+    writefileasync(outputFile, JSON.stringify(aggregateData)).then(() => {
+      resolve();
+    }).catch((error) => {
+      reject(error);
+    });
+  }).catch((error) => {
+    reject(error);
   });
-  for (let i = 0; i < Object.keys(continent).length; i += 1) {
-    continentData[Object.entries(continent)[i][1]].GDP_2012 += parseFloat(csvobjarray[i]['GDP Billions (US Dollar) - 2012']);
-    continentData[Object.entries(continent)[i][1]].POPULATION_2012 += parseFloat(csvobjarray[i]['Population (Millions) - 2012']);
-  }
-  await writefileasync(outputFile, JSON.stringify(continentData));
-};
-aggregate('./data/datafile.csv');
+});
 module.exports = aggregate;
