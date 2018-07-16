@@ -1,4 +1,7 @@
+// import continent from './continent';
+
 const fs = require('fs');
+const continent = require('./continent');
 
 /**
  * Aggregates GDP and Population Data by Continents..
@@ -58,27 +61,6 @@ const aggregate = async (filePath) => {
     return objArray;
   }
   const csvarray = await CSV2JSON(bufferString);
-
-
-  const continent = [['Argentina', 'South America'],
-    ['Australia', 'Oceania'],
-    ['Brazil', 'South America'],
-    ['Canada', 'North America'],
-    ['China', 'Asia'],
-    ['France', 'Europe'],
-    ['Germany', 'Europe'],
-    ['India', 'Asia'],
-    ['Indonesia', 'Asia'],
-    ['Italy', 'Europe'],
-    ['Japan', 'Asia'],
-    ['Mexico', 'North America'],
-    ['Russia', 'Asia'],
-    ['Saudi Arabia', 'Asia'],
-    ['South Africa', 'Africa'],
-    ['Republic of Korea', 'Asia'],
-    ['Turkey', 'Asia'],
-    ['United Kingdom', 'Europe'],
-    ['USA', 'North America']];
 
   const continent2 = new Map(continent);
   const continentData = {};
