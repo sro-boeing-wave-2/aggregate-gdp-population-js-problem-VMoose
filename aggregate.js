@@ -1,5 +1,3 @@
-// import continent from './continent';
-
 const fs = require('fs');
 const continent = require('./continent');
 
@@ -7,7 +5,6 @@ const continent = require('./continent');
  * Aggregates GDP and Population Data by Continents..
  * @param {*} filePath
  */
-
 
 async function readfileasync(filePath) {
   return new Promise(((resolve, reject) => {
