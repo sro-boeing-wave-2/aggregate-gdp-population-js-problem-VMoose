@@ -34,11 +34,10 @@ const aggregate = async (filePath) => {
   const outputFile = './output/output.json';
 
   async function CSVToArray() {
-    const bufferarray = bufferString.toString();
-    const replacearray = bufferarray.replace(/['"]+/g, '').split('\n').slice(0, -1);
+    const bufferarray = bufferString.toString().replace(/['"]+/g, '').split('\n').slice(0, -1);
     const array2 = [];
-    for (let i = 0; i < replacearray.length; i += 1) {
-      const row = replacearray[i].toString().split(',');
+    for (let i = 0; i < bufferarray.length; i += 1) {
+      const row = bufferarray[i].toString().split(',');
       array2.push(row);
     }
     return array2;
