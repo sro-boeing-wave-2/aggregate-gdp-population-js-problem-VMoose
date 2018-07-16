@@ -35,11 +35,10 @@ const aggregate = async (filePath) => {
 
   async function CSVToArray() {
     const bufferarray = bufferString.toString();
-    const replacearray = bufferarray.replace(/['"]+/g, '');
-    const splitarray = replacearray.split('\n').slice(0, -1);
+    const replacearray = bufferarray.replace(/['"]+/g, '').split('\n').slice(0, -1);
     const array2 = [];
-    for (let i = 0; i < splitarray.length; i += 1) {
-      const row = splitarray[i].toString().split(',');
+    for (let i = 0; i < replacearray.length; i += 1) {
+      const row = replacearray[i].toString().split(',');
       array2.push(row);
     }
     return array2;
