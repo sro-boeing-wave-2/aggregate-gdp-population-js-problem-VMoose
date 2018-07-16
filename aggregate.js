@@ -6,7 +6,7 @@ const continent = require('./continent');
  * @param {*} filePath
  */
 
-async function readfileasync(filePath) {
+function readfileasync(filePath) {
   return new Promise(((resolve, reject) => {
     fs.readFile(filePath, 'utf8', (err, data) => {
       if (err) {
@@ -17,7 +17,7 @@ async function readfileasync(filePath) {
     });
   }));
 }
-async function writefileasync(outfilePath, outputdata) {
+function writefileasync(outfilePath, outputdata) {
   return new Promise((resolve, reject) => {
     fs.writeFile(outfilePath, outputdata, 'utf8', (err, data) => {
       if (err) {
@@ -34,7 +34,7 @@ const aggregate = async (filePath) => {
   const outputFile = './output/output.json';
 
   function CSVToArray() {
-    const bufferarray = bufferString.toString().replace(/['"]+/g, '').split('\n').slice(0, -1);
+    const bufferarray = bufferString.replace(/['"]+/g, '').split('\n').slice(0, -1);
     const array2 = [];
     for (let i = 0; i < bufferarray.length; i += 1) {
       const row = bufferarray[i].toString().split(',');
@@ -69,4 +69,5 @@ const aggregate = async (filePath) => {
   }
   await writefileasync(outputFile, JSON.stringify(continentData));
 };
+aggregate('./data/datafile.csv');
 module.exports = aggregate;
