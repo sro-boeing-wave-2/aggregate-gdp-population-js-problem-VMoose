@@ -59,9 +59,9 @@ const aggregate = async (filePath) => {
   }
   const csvarray = await CSV2JSON(bufferString);
 
-  const continent2 = new Map(continent);
+  const continentMap = new Map(continent);
   const continentData = {};
-  new Set(continent2.values()).forEach((cont) => {
+  new Set(continentMap.values()).forEach((cont) => {
     continentData[cont] = {
       GDP_2012: 0, POPULATION_2012: 0,
     };
